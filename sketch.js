@@ -19,7 +19,6 @@ let timerDuration = 180000; // 3 minutes in milliseconds
 let timer;
 let numDotsBigCircle = 14; // Number of dots on the big circle
 
-
 let canvasSizes = [
   { width: 30, height: 30, frequency: 50 }, // Lowered frequency
   { width: 50, height: 50, frequency: 100 }, // Lowered frequency
@@ -29,9 +28,6 @@ let canvasSizes = [
 
 let rotationCounter = 0; // Counter to track canvas rotations
 let audioPlaying = false; // Track if audio is playing
-
-
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -45,9 +41,7 @@ function setup() {
   // Enable fullscreen mode on mobile devices
   if (isMobileDevice()) {
     fullscreen(true);
-
   }
-  
 }
 
 function draw() {
@@ -61,7 +55,6 @@ function draw() {
   text("Time Remaining: " + nf(floor(timeRemaining / 60), 2) + ":" + nf(timeRemaining % 60, 2), width / 2, 30);
 
   // Draw the instruction text
- 
   textSize(16);
   fill(0);
   text("Hold Red to move", width / 2, 60);
@@ -260,8 +253,6 @@ function resetSketch() {
   timer = millis() + timerDuration;
 }
 
-
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
@@ -289,10 +280,6 @@ function playSound(frequency) {
 function isMobileDevice() {
   return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }
-// Detect if the device is mobile
-function isMobileDevice() {
-  return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-}
 
 // Touch events
 function touchStarted() {
@@ -316,6 +303,6 @@ function touchEnded() {
   if (isMobileDevice()) {
     // Reset circle position on touch end
     circleX = mouseX;
-    circleY = mouseY;A
+    circleY = mouseY;
   }
 }
