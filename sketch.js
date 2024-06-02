@@ -30,7 +30,7 @@ let rotationCounter = 0; // Counter to track canvas rotations
 let audioPlaying = false; // Track if audio is playing
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  adjustCanvasSize();
   video = createCapture(VIDEO);
   video.size(100, 100); // Set the size of the video capture
   video.hide(); // Hide the video element
@@ -254,7 +254,21 @@ function resetSketch() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  adjustCanvasSize();
+}
+
+function adjustCanvasSize() {
+  if (isMobileDevice()) {
+    if (windowWidth < windowHeight) {
+      // Hochformat
+      createCanvas(windowWidth, windowHeight);
+    } else {
+      // Querformat
+      createCanvas(windowHeight, windowWidth);
+    }
+  } else {
+    createCanvas(windowWidth, windowHeight);
+  }
 }
 
 // Function to return the sign of a number
