@@ -41,7 +41,6 @@ function setup() {
   // Enable fullscreen mode on mobile devices
   if (isMobileDevice()) {
     fullscreen(true);
-    adaptCanvasToMobile();
   }
 }
 
@@ -94,7 +93,7 @@ function draw() {
   }
 
   // Update circle position with mouse or touch
-  if (mouseIsPressed || touches.length > 0) {
+  if (mouseIsPressed || (touches.length > 0 && touches[0])) {
     circleX = mouseIsPressed ? mouseX : touches[0].x;
     circleY = mouseIsPressed ? mouseY : touches[0].y;
   }
@@ -206,48 +205,104 @@ function freezeFrame() {
     frozenCanvases.splice(0, numToRemove);
   }
 
-  let canvasSize = random(canvasSizes);
-  let frozenCanvas = createGraphics(canvasSize.width, canvasSize.height);
-  frozenCanvas.image(video, 0, 0, canvasSize.width, canvasSize.height);
-  frozenCanvases.push({
-    canvas: frozenCanvas,
-    x: random(width - canvasSize.width),
-    y: random(height - canvasSize.height),
-    width: canvasSize.width,
-    height: canvasSize.height,
-    startTime: millis()
-  });
+  // Randomly select a canvas size from the array
+  let sizeIndex = floor(random(canvasSizes.length));
+  let canvasSize = canvasSizes[sizeIndex];
+  let canvasWidth = canvasSize.width;
+  let canvasHeight = canvasSize.height;
+
+  let attemptCount = 0;
+  let x, y;
+  let invalidSpawn = true;
+  while (invalidSpawn && attemptCount < 100) {
+    // Randomly position the canvas on the screen
+    x = random(width - canvasWidth);
+    y = random(height - canvasHeight);
+
+    // Check if the canvas spawns on top of the circle or directly next to it
+    let distToCircle = dist(x + canvasWidth / 2, y + canvasHeight / 2, width / 2, height / 2);
+    let distToCircleEdge = abs(distToCircle - largeCircleRadius);
+    if (distToCircleEdge > 20 && distToCircle > largeCircleRadius + canvasWidth / 2 + 20) {
+      invalidSpawn = false;
+    }
+
+    attemptCount++;
+  }
+
+  // Create a new canvas for freezing
+  let frozenCanvas = createGraphics(canvasWidth, canvasHeight); // Create a canvas with the fixed width and height
+  frozenCanvas.image(video, 0, 0, canvasWidth, canvasHeight); // Draw the video onto the frozen canvas
+
+  // Store the start time and dimensions of the canvas
+  frozenCanvas.startTime = millis();
+  frozenCanvas.width = canvasWidth;
+  frozenCanvas.height = canvasHeight;
+
+  // Store the canvas and its position
+  frozenCanvases.push({ canvas: frozenCanvas, x: x, y: y, width: canvasWidth, height: canvasHeight });
+
+  // Enable displaying the video only for the last canvas
+  displayVideo = true;
 }
 
 function resetSketch() {
+  // Reset variables and timer
   frozenCanvases = [];
   lastFrozenTime = 0;
+  lastSpawnTime = 0;
   timer = millis() + timerDuration;
-}
-
-function sign(n) {
-  return n === 0 ? 0 : n > 0 ? 1 : -1;
-}
-
-function isMobileDevice() {
-  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
-function adaptCanvasToMobile() {
-  resizeCanvas(windowWidth, windowHeight);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
+// Function to return the sign of a number
+function sign(x) {
+  return x >= 0 ? 1 : -1;
+}
+
+// Function to play sound with given frequency for duration
 function playSound(frequency) {
-  let osc = new p5.Oscillator('sine');
-  osc.freq(frequency);
-  osc.amp(0.5); // Set volume
-  osc.start();
+  // Adjust frequency for lower range
+  let lowerFrequency = frequency * 0.5;
+  let osc = new p5.Oscillator(); // Create a new oscillator
+  osc.setType('sine'); // Set oscillator type to sine for a smooth sound
+  osc.freq(lowerFrequency); // Set lower frequency
+  osc.amp(0.5); // Set amplitude
+  osc.start(); // Start the oscillator
   setTimeout(() => {
-    osc.stop();
-    audioPlaying = false; // Reset audio playing flag after sound stops
+    osc.stop(); // Stop the oscillator after 0.1 seconds
   }, 100);
+}
+
+// Function to detect if the device is mobile
+function isMobileDevice() {
+  return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
+// Touch events
+function touchStarted() {
+  if (isMobileDevice() && touches[0]) {
+    // Update circle position on touch
+    circleX = touches[0].x;
+    circleY = touches[0].y;
+  }
+}
+
+function touchMoved() {
+  if (isMobileDevice() && touches[0]) {
+    // Update circle position on touch move
+    circleX = touches[0].x;
+    circleY = touches[0].y;
+    return false; // Prevent default
+  }
+}
+
+function touchEnded() {
+  if (isMobileDevice()) {
+    // Reset circle position on touch end
+    circleX = mouseX;
+    circleY = mouseY;
+  }
 }
