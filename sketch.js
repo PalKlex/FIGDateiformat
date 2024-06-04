@@ -20,17 +20,17 @@ let timer;
 let numDotsBigCircle = 14; // Number of dots on the big circle
 
 let canvasSizes = [
-  { width: 30, height: 30, frequency: 50 }, // Lowered frequency
-  { width: 50, height: 50, frequency: 100 }, // Lowered frequency
-  { width: 70, height: 70, frequency: 150 }, // Lowered frequency
-  { width: 80, height: 80, frequency: 200 } // Lowered frequency
+  { width: 15, height: 15, frequency: 25 }, // Lowered frequency
+  { width: 25, height: 25, frequency: 50 }, // Lowered frequency
+  { width: 35, height: 35, frequency: 75 }, // Lowered frequency
+  { width: 40, height: 40, frequency: 100 } // Lowered frequency
 ];
 
 let rotationCounter = 0; // Counter to track canvas rotations
 let audioPlaying = false; // Track if audio is playing
 
 function setup() {
-  createCanvas(500, 1000);
+  createCanvas(360, 640);
   video = createCapture(VIDEO);
   video.size(100, 100); // Set the size of the video capture
   video.hide(); // Hide the video element
