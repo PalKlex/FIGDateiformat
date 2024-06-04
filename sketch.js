@@ -44,6 +44,10 @@ function setup() {
   }
 }
 
+// ... (rest of the code) ...
+
+// This code works also for iPad and iPhones
+
 function draw() {
   background(255);
 
