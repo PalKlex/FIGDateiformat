@@ -199,6 +199,7 @@ function draw() {
 }
 
 function freezeFrame() {
+  // Limit the number of frozen canvases
   if (frozenCanvases.length >= maxCanvases) {
     // Remove the oldest canvases until the number of canvases is within the limit
     let numToRemove = frozenCanvases.length - maxCanvases + 1;
