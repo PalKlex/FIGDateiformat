@@ -30,21 +30,27 @@ let rotationCounter = 0; // Counter to track canvas rotations
 let audioPlaying = false; // Track if audio is playing
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  video = createCapture(VIDEO);
-  video.size(100, 100); // Set the size of the video capture
-  video.hide(); // Hide the video element
-
-  // Start the timer
-  timer = millis() + timerDuration;
-
-  // Enable fullscreen mode on mobile devices
   if (isMobileDevice()) {
-    fullscreen(true);
+    document.getElementById('mobileMessage').style.display = 'flex';
+  } else {
+    createCanvas(windowWidth, windowHeight);
+    video = createCapture(VIDEO);
+    video.size(100, 100); // Set the size of the video capture
+    video.hide(); // Hide the video element
+
+    // Start the timer
+    timer = millis() + timerDuration;
+
+    // Enable fullscreen mode on mobile devices
+    if (isMobileDevice()) {
+      fullscreen(true);
+    }
   }
 }
 
 function draw() {
+  if (isMobileDevice()) return;
+
   background(255);
 
   // Draw the timer
