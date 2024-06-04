@@ -30,7 +30,7 @@ let rotationCounter = 0; // Counter to track canvas rotations
 let audioPlaying = false; // Track if audio is playing
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(500, 1000);
   video = createCapture(VIDEO);
   video.size(100, 100); // Set the size of the video capture
   video.hide(); // Hide the video element
